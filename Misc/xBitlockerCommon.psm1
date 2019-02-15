@@ -792,6 +792,15 @@ function Assert-HasPrereqsForBitlocker
     $blAdminToolsFeature = Get-WindowsFeature RSAT-Feature-Tools-BitLocker
     $blAdminToolsRemoteFeature = Get-WindowsFeature RSAT-Feature-Tools-BitLocker-RemoteAdminTool
 
+    if (
+	    ((Get-CimInstance -ClassName Win32_OperatingSystem).ProductType -eq 1) -and
+	    (get-command enable-bitlocker -ErrorAction SilentlyContinue)
+    )
+    {
+	    # Client OS with BitLocker detected
+	    return
+    }
+    
     if ($blFeature.InstallState -ne 'Installed')
     {
         $hasAllPreReqs = $false
